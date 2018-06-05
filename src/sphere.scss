@@ -1,0 +1,44 @@
+@import './constant';
+
+@function sphere-init($position, $radius) {
+  @return (
+    position: $position,
+    radius: $radius
+  );
+}
+
+@function sphere-intersect($sphere, $ray) {
+  $po: sub(map-get($ray, origin), map-get($sphere, position));
+  $b: dot(map-get($ray, direction), $po);
+  $r: map-get($sphere, radius);
+  $c: sqr-norm($po) - $r * $r;
+  // 判別式 Δ = b^2 - a*c
+  $det: $b * $b - $c;
+  // 交差しない
+  @if $det < 0 {
+    @return (
+      intersect: false,
+    );
+  }
+  $sqrt-det: sqrt($det);
+  $t1: -$b - $sqrt-det;
+  $t2: -$b + $sqrt-det;
+  // 出射方向と反射側で交差
+  @if $t1 < $EPS and $t2 < $EPS {
+    @return (
+      intersect: false,
+    );
+  }
+  // 近い方が正の場合はそれを採用
+  // それ以外(球体内部からの交差の場合)は正の方を採用
+  $distance: if($t1 > $EPS, $t1, $t2);
+  // r = o + t * d
+  $position: add(map-get($ray, origin), mul(map-get($ray, direction), $distance));
+  // 法線は球体中心から外向き
+  $normal: normalize(sub($position, map-get($sphere, position)));
+  @return (
+    intersect: true,
+    normal: $normal,
+    distance: $distance
+  )
+}

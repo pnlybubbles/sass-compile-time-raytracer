@@ -1,6 +1,7 @@
 @import './image/image';
 @import './constant';
 @import './math/vector';
+@import './sphere';
 
 @function main() {
   $data: ();
@@ -9,15 +10,42 @@
     @for $left from 0 through $width - 1 {
       $x: $left;
       $y: $height - $top;
-      $ray-origin: (0, 0, 0.5);
-      $ray-direction: normalize((
-        $x / $width - 0.5,
-        $y / $height - 0.5,
-        -1.0,
-      ));
-      $row: append($row, $ray-direction);
+      $ray: (
+        origin: (0, 0, 5.0),
+        direction: normalize((
+          $x / $width - 0.5,
+          $y / $height - 0.5,
+          -1.0,
+        ))
+      );
+      $intersect: (
+        intersect: false
+      );
+      @each $obj in $scene {
+        $i: sphere-intersect(
+          sphere-init((0, 0, 0), 1),
+          $ray
+        );
+        @if map-get($i, intersect) {
+          @if map-get($intersect, intersect) {
+            @if map-get($i, distance) < map-get($intersect, distance) {
+              $intersect: $i;
+            }
+          } @else {
+            $intersect: $i;
+          }
+        }
+      }
+      $color: if(map-get($intersect, intersect),
+        add(div(map-get($intersect, normal), 2), (0.5, 0.5, 0.5)),
+        (0, 0, 0));
+      $row: append($row, $color);
     }
     $data: append($data, $row);
   }
   @return image($data);
 }
+
+$scene: (
+  sphere-init((0, 0, 0), 1)
+);
