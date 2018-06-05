@@ -1,13 +1,21 @@
 @import './image/image';
 @import './constant';
+@import './math/vector';
 
 @function main() {
   $data: ();
-  @for $y from 0 through $height - 1 {
+  @for $top from 0 through $height - 1 {
     $row: ();
-    @for $x from 0 through $width - 1 {
-      $vector: ($x / $width, $y / $height, 1);
-      $row: append($row, $vector);
+    @for $left from 0 through $width - 1 {
+      $x: $left;
+      $y: $height - $top;
+      $ray-origin: (0, 0, 0.5);
+      $ray-direction: normalize((
+        $x / $width - 0.5,
+        $y / $height - 0.5,
+        -1.0,
+      ));
+      $row: append($row, $ray-direction);
     }
     $data: append($data, $row);
   }

@@ -1,0 +1,52 @@
+@import './func';
+
+@function add($v1, $v2) {
+  @return (
+    nth($v1, 1) + nth($v2, 1),
+    nth($v1, 2) + nth($v2, 2),
+    nth($v1, 3) + nth($v2, 3)
+  );
+}
+
+@function sub($v1, $v2) {
+  @return (
+    nth($v1, 1) - nth($v2, 1),
+    nth($v1, 2) - nth($v2, 2),
+    nth($v1, 3) - nth($v2, 3)
+  );
+}
+
+@function mul($v, $s) {
+  @return (
+    nth($v, 1) * $s,
+    nth($v, 2) * $s,
+    nth($v, 3) * $s
+  );
+}
+
+@function div($v, $s) {
+  @return (
+    nth($v, 1) / $s,
+    nth($v, 2) / $s,
+    nth($v, 3) / $s
+  );
+}
+
+@function dot($v1, $v2) {
+  @return
+    nth($v1, 1) * nth($v2, 1)
+    + nth($v1, 2) * nth($v2, 2)
+    + nth($v1, 3) * nth($v2, 3);
+}
+
+@function sqr-norm($v) {
+  @return dot($v, $v);
+}
+
+@function norm($v) {
+  @return sqrt(sqr-norm($v));
+}
+
+@function normalize($v) {
+  @return div($v, norm($v));
+}
