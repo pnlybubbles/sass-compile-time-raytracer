@@ -1,0 +1,15 @@
+@import './src/constant';
+@import './src/main';
+
+body {
+  margin: 0;
+}
+
+body::after {
+  content: '';
+  display: block;
+  width: #{$width}px;
+  height: #{$height}px;
+  background-image: main();
+  background-repeat: no-repeat;
+}

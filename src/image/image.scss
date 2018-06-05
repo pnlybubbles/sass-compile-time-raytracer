@@ -1,0 +1,59 @@
+@import './base64';
+
+@function image($data) {
+  @return url('data:image/svg+xml,' + data-to-svg($data));
+}
+
+@function data-to-svg($data) {
+  $svg: base64-encode('<svg xmlns="http://www.w3.org/2000/svg">');
+  @for $y from 0 through length($data) - 1 {
+    $row: nth($data, $y + 1);
+    @for $x from 0 through length($row) - 1 {
+      $vector: nth($row, $x + 1);
+      $svg: $svg + rect(vector-to-color($vector), $x, $y);
+    }
+  }
+  $svg: $svg + base64-encode('</svg>');
+  @return $svg;
+}
+
+@function base64-encode-list($list) {
+  @for $i from 1 through length($list) {
+    $v: nth($list, $i);
+    $list: set-nth($list, $i, base64-encode($v));
+  }
+  @return $list;
+}
+
+$vector-to-color-str: base64-encode-list((
+  'rgb(',
+  ',',
+  ')'
+));
+
+@function vector-to-color($vector) {
+  @return nth($vector-to-color-str, 1)
+    + (nth($vector, 1) * 255)
+    + nth($vector-to-color-str, 2)
+    + (nth($vector, 2) * 255)
+    + nth($vector-to-color-str, 2)
+    + (nth($vector, 3) * 255)
+    + nth($vector-to-color-str, 3);
+}
+
+$rect-str: base64-encode-list((
+  '<rect fill=\'',
+  '\' height=\'1px\' width=\'1px\' x=\'',
+  'px\' y=\'',
+  'px\' />'
+));
+
+@function rect($color, $x, $y) {
+  @return nth($rect-str, 1)
+    + $color
+    + nth($rect-str, 2)
+    + $x
+    + nth($rect-str, 3)
+    + $y
+    + nth($rect-str, 4);
+}

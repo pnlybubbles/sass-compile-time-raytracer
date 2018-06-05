@@ -1,0 +1,15 @@
+@import './image/image';
+@import './constant';
+
+@function main() {
+  $data: ();
+  @for $y from 0 through $height - 1 {
+    $row: ();
+    @for $x from 0 through $width - 1 {
+      $vector: ($x / $width, $y / $height, 1);
+      $row: append($row, $vector);
+    }
+    $data: append($data, $row);
+  }
+  @return image($data);
+}

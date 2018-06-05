@@ -1,0 +1,13 @@
+{
+  "name": "sass-compile-time-raytracer",
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run serve & npm run watch",
+    "serve": "live-server --no-browser public",
+    "watch": "node-sass index.scss public/index.css -w -r"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.0",
+    "node-sass": "^4.9.0"
+  }
+}
